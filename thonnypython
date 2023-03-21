@@ -1,0 +1,106 @@
+import RPi.GPIO as GPIO
+import time
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(11, GPIO.IN)
+GPIO.setup(18, GPIO.IN)
+##from playsound import playsound
+##playsound('retro.mp3')
+import pygame
+pygame.init()
+my_sound = pygame.mixer.Sound('/home/pi/Downloads/pacman.wav')
+my_sound.set_volume(0.1)
+my_sound.play()
+
+
+sound1 = pygame.mixer.Sound('/home/pi/Downloads/correct.wav')
+sound1.set_volume(0.3)
+sound2 = pygame.mixer.Sound('/home/pi/Downloads/wrong.wav')
+sound2.set_volume(1)
+
+
+score = 0
+print ("Welcome to BasketBall-CYBER \n")
+
+def getAnswer():
+    i = 0
+    x = 0
+    answer = 0
+    ants = 0
+    while ants == 0:
+        i = GPIO.input(11)
+        x = GPIO.input(18)
+        if i == 1:
+            time.sleep(0.5)
+            answer = "A"
+            ants = 2
+        if x == 1:
+            time.sleep(0.5)
+            answer = "B"
+            ants = 2
+
+    return answer
+
+def answerVSAnsGuessed(ansGuessed, answer, score):
+    if ansGuessed == answer:
+        sound1.play()
+        print ("You picked ", ansGuessed )
+        print ("Well done that was a sensational bit of knowledge which you have just displayed. \n")
+        score = score + 1
+    else:
+        sound2.play()
+        print ("You Picked", ansGuessed,  "The Correct Answer Was", answer)
+        print ("That was abysmally poor even by your low low standards. \n")
+    return score
+
+def q1():
+    time.sleep(5)
+    print ("Question 1: \n")
+    print ("When was the computer misuse act first instated? \n")
+    print ("A) 1990 \t\t B) 1992 \n")
+    time.sleep(2)
+    answer = "A"
+    return answer
+
+def q2():
+    time.sleep(5)
+    print ("Question 2: \n")
+    print ("Who Created the World Wide Web? \n")
+    print ("A) John Henderson \t\t B) Tim Berners-Lee \n")
+    time.sleep(2)
+    answer = "B"
+    return answer
+
+def q3():
+    time.sleep(5)
+    print ("Question 3: \n")
+    print ("What Malware is self-replicating? \n")
+    print ("A) Worms \t\t B) Virus \n")
+    time.sleep(2)
+    answer = "A"
+    return answer
+
+
+answer = q1()
+ansGuessed = getAnswer()
+score = answerVSAnsGuessed(ansGuessed, answer, score)
+#print (score)
+
+answer = q2()
+ansGuessed = getAnswer()
+score = answerVSAnsGuessed(ansGuessed, answer, score)
+#print (score)
+
+answer = q3()
+ansGuessed = getAnswer()
+score = answerVSAnsGuessed(ansGuessed, answer, score)
+#print (score)
+
+print ("You have scored", score, "out of 3 \n")
+if score == 3:
+    print ("Congrats You Got Them All Correct")
+elif score >= 1:
+    print ("Unlucky! Keep Practicing & Better Luck Next Time!")
+else:
+    print ("Wow! That Is TERRIBLE!")
+my_sound.set_volume(0)
