@@ -1,1 +1,27 @@
-
+body{
+    background-image: url(cyberbackground.gif);
+    width: 100%;
+    height: 100%;
+}
+h1{
+    font-size: 600%;
+    font-family: sans-serif;
+    color: lightgray;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 3px 3px #ff00e6;  
+}
+h2{
+    font-size: 300%;
+    font-family: sans-serif;
+    color: lightgray;
+    text-align: center;
+    text-shadow: 3px 3px #ff00e6;  
+}
+p{
+    font-size: 400%;
+    font-family: sans-serif;
+    color: lightgray;
+    text-align: center;
+    text-shadow: 3px 3px #ff00e6;  
+}
