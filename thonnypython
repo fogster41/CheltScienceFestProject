@@ -1,34 +1,40 @@
+from flask import Flask, render_template, request
 import RPi.GPIO as GPIO
 import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.IN)
 GPIO.setup(18, GPIO.IN)
+##from playsound import playsound
+##playsound('retro.mp3')
+import pygame #allows music
 
-import pygame
+app = Flask(__name__)
+
 pygame.init()
-my_sound = pygame.mixer.Sound('/home/pi/Downloads/pacman.wav')
-my_sound.set_volume(0.1)
-my_sound.play()
+my_sound = pygame.mixer.Sound('/home/pi/Downloads/pacman.wav') #main background sound
+my_sound.set_volume(0.1) #sets music volume
+my_sound.play() #plays sound
 
 
-sound1 = pygame.mixer.Sound('/home/pi/Downloads/correct.wav')
+sound1 = pygame.mixer.Sound('/home/pi/Downloads/correct.wav') #more sounds for correct/incorrect
 sound1.set_volume(0.3)
 sound2 = pygame.mixer.Sound('/home/pi/Downloads/wrong.wav')
 sound2.set_volume(1)
+sound3 = pygame.mixer.Sound('/home/pi/Downloads/congrats.wav')
 
 
 score = 0
 print ("Welcome to BasketBall-CYBER \n")
 
-def getAnswer():
+def getAnswer():  #using PIR sensors to provide input through GPIO pins
     i = 0
     x = 0
     answer = 0
     ants = 0
     while ants == 0:
-        i = GPIO.input(11)
-        x = GPIO.input(18)
+        i = GPIO.input(11) #pir1
+        x = GPIO.input(18) #pir2
         if i == 1:
             time.sleep(0.5)
             answer = "A"
@@ -80,6 +86,7 @@ def q3():
     return answer
 
 
+
 answer = q1()
 ansGuessed = getAnswer()
 score = answerVSAnsGuessed(ansGuessed, answer, score)
@@ -95,11 +102,22 @@ ansGuessed = getAnswer()
 score = answerVSAnsGuessed(ansGuessed, answer, score)
 #print (score)
 
-print ("You have scored", score, "out of 3 \n")
-if score == 3:
-    print ("Congrats You Got Them All Correct")
-elif score >= 1:
-    print ("Unlucky! Keep Practicing & Better Luck Next Time!")
-else:
-    print ("Wow! That Is TERRIBLE!")
+@app.route('/results')
+def quizresult():
+    message = f"You have scored {score} out of 3"
+    if score == 3:
+        score1 = "Congrats You Got Them All Correct"
+    elif score >= 1:
+        score1 = "Unlucky! Keep Practicing & Better Luck Next Time!"
+    else:
+        score1 = "Wow! That Is TERRIBLE!"
+        
+    return render_template('result.html', score1=score1, message=message, score=score)
+
+
+if __name__ == "__main__":
+    app.run(host="192.168.123.58", port=5000, debug=True)
+    
+        
 my_sound.set_volume(0)
+sound3.play()
